@@ -20,26 +20,29 @@ const highlightOff = (target) => {
 
 const handleMouseClick = (evt) => {
   const target = evt.target;
+
   if (!isImageTag(target)) {
-    return;
+    const possibleImage = findImage(target)
+
+    if (!possibleImage) {
+      return;
+    }
   }
 
   state.port.postMessage({
     command: 'find',
-    url: target.src
+    url: state.currentImage.src
   });
 }
 
 const undetectImage = (target) => {
   highlightOff(target)
   state.currentImage = null;
-  target.removeEventListener('click', handleMouseClick)
 }
 
-const detectImage = (target) => {
+const detectImage = (target, shouldListenOnParentClick = false) => {
   highlightOn(target)
   state.currentImage = target;
-  target.addEventListener('click', handleMouseClick)
 }
 
 const findImage = (target) => {
@@ -82,7 +85,7 @@ const handleMouseMove = (event) => {
     const possibleImage = findImage(target)
 
     if (possibleImage) {
-      detectImage(possibleImage)
+      detectImage(possibleImage, true)
     }
 
     return;
@@ -105,9 +108,11 @@ chrome.runtime.onConnect.addListener(function(port) {
   port.onMessage.addListener(function(msg) {
     if (msg.enabled) {
       document.addEventListener("mousemove", handleMouseMove, false);
+      document.addEventListener("click", handleMouseClick, false);
     }
     if (!msg.enabled) {
       document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("click", handleMouseClick);
     }
   });
 
