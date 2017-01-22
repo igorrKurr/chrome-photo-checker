@@ -1,7 +1,8 @@
 const highlightColor = 'red'
 
 const state = {
-  currentImage: null
+  currentImage: null,
+  port: null
 }
 
 const isTag = (tagName) => (el) => el.tagName === tagName
@@ -17,14 +18,28 @@ const highlightOff = (target) => {
   target.style.setProperty("border", "none")
 }
 
+const handleMouseClick = (evt) => {
+  const target = evt.target;
+  if (!isImageTag(target)) {
+    return;
+  }
+
+  state.port.postMessage({
+    command: 'find',
+    url: target.src
+  });
+}
+
 const undetectImage = (target) => {
   highlightOff(target)
   state.currentImage = null;
+  target.removeEventListener('click', handleMouseClick)
 }
 
 const detectImage = (target) => {
   highlightOn(target)
   state.currentImage = target;
+  target.addEventListener('click', handleMouseClick)
 }
 
 const findImage = (target) => {
@@ -95,4 +110,6 @@ chrome.runtime.onConnect.addListener(function(port) {
       document.removeEventListener("mousemove", handleMouseMove);
     }
   });
+
+  state.port = port
 });
