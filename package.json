@@ -4,7 +4,8 @@
   "description": "Finds photo by click",
   "scripts": {
     "build": "node utils/build.js",
-    "start": "node utils/webserver.js"
+    "start": "node utils/webserver.js",
+    "pack": "crx pack build -o chrome-photo-checker.crx"
   },
   "dependencies": {
     "babel-core": "^6.17.0",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
+    "crx": "^3.2.1",
     "file-loader": "^0.9.0"
   }
 }
