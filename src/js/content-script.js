@@ -1,5 +1,3 @@
-console.log('INIT')
-
 const highlightColor = 'red'
 
 const state = {
@@ -88,4 +86,13 @@ const handleMouseMove = (event) => {
   }
 }
 
-document.addEventListener("mousemove", handleMouseMove, false);
+chrome.runtime.onConnect.addListener(function(port) {
+  port.onMessage.addListener(function(msg) {
+    if (msg.enabled) {
+      document.addEventListener("mousemove", handleMouseMove, false);
+    }
+    if (!msg.enabled) {
+      document.removeEventListener("mousemove", handleMouseMove);
+    }
+  });
+});

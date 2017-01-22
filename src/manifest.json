@@ -6,11 +6,24 @@
     "persistent": false
   },
   "browser_action": {
-    "default_title": "Enable image check"
+    "default_title": "Enable image check",
+    "default_icon":"assets/icon_gray38x38.png"
+  },
+  "icons": {
+    "16": "assets/icon16x16.png",
+    "19": "assets/icon19x19.png",
+    "32": "assets/icon32x32.png",
+    "38": "assets/icon38x38.png",
+    "48": "assets/icon48x48.png",
+    "128": "assets/icon128x128.png"
   },
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "permissions": [
     "activeTab"
+  ],
+  "web_accessible_resources": [
+    "assets/icon38x38.png",
+    "assets/icon19x19.png"
   ]
 }
