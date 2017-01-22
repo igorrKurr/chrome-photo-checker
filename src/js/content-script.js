@@ -8,6 +8,7 @@ const state = {
 
 const isTag = (tagName) => (el) => el.tagName === tagName
 const isImageTag = isTag('IMG')
+const isBodyTag = isTag('BODY')
 
 const isOtherImage = (first, second) => first.src !== second.src
 
@@ -18,6 +19,43 @@ const highlightOff = (target) => {
   target.style.setProperty("border", "none")
 }
 
+const undetectImage = (target) => {
+  highlightOff(target)
+  state.currentImage = null;
+}
+
+const detectImage = (target) => {
+  highlightOn(target)
+  state.currentImage = target;
+}
+
+const findImage = (target) => {
+  const parent = target.parentElement
+
+  if (!parent) {
+    return false;
+  }
+  if (isBodyTag(parent)) {
+    return false;
+  }
+
+  const firstChild = parent.children[0]
+  if (!firstChild) {
+    return false;
+  }
+
+  const firstImage = firstChild.children[0]
+  if (!firstImage) {
+    return false;
+  }
+  if (!isImageTag(firstImage)) {
+    return false
+  }
+
+  return firstImage
+}
+
+
 const handleMouseMove = (event) => {
   const target = event.target
   const currentImage = state.currentImage;
@@ -25,15 +63,20 @@ const handleMouseMove = (event) => {
 
   if (!isImage) {
     if (currentImage) {
-      highlightOff(currentImage)
-      state.currentImage = null;
+      undetectImage(currentImage)
     }
+
+    const possibleImage = findImage(target)
+
+    if (possibleImage) {
+      detectImage(possibleImage)
+    }
+
     return;
   }
 
   if (!currentImage) {
-    highlightOn(target)
-    state.currentImage = target;
+    detectImage(target)
     return;
   }
 
